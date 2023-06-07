@@ -7,7 +7,7 @@ from main_page.context_data import get_common_context, get_page_context
 def blog_post_list(request):
 
     posts = Blog.objects.filter(is_visible=True).order_by('-pub_date')
-    paginator = Paginator(posts, 12)  # разбиваем на страницы по 8 товаров на странице
+    paginator = Paginator(posts, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     data = {

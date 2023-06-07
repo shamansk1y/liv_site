@@ -1,5 +1,5 @@
 # from account.models import Favorite
-# from cart.cart import Cart
+from cart.cart import Cart
 from .forms import SubscriptionForm, ContactUsForm
 from .models import Slider, Contacts, About
 

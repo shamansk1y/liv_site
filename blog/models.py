@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 from ckeditor.fields import RichTextField
-
 from main_page.utils import get_file_name_id
 from shop.models import Product
 

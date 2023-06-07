@@ -1,0 +1,89 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="{% url 'index' %}">Головна</a>
+                    <span class="breadcrumb-item active">Блог - всі публікації</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Blog list Start -->
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Блог</span></h2>
+
+    <div class="row px-xl-5">
+        {% for post in page_obj %}
+            <div class="col-md-6">
+                <div class="product-offer mb-30" style="height: 300px;">
+                    <img class="img-fluid" src="{{ post.image.url }}" onerror="this.onerror=null;this.src='{% static 'img/carousel-1.jpeg' %}';" alt="{{ post.title }}">
+                    <div class="offer-text">
+                        <h6 class="text-white text-uppercase">{{ post.title }}</h6>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Читати статтю</a>
+                    </div>
+                </div>
+                <p>Дата публікації: {{ post.pub_date|date:"j.m.Y" }}</p>
+                <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                <p>{{ post.content|safe|truncatewords:30 }} <a href="{{ post.get_absolute_url }}">Читати повністю</a></p>
+
+
+
+            </div>
+        {% empty %}
+            <p>No posts yet.</p>
+        {% endfor %}
+    </div>
+    <!-- Blog list End -->
+
+    <div class="col-12">
+                <nav aria-label="...">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+    {% include 'rec_products_main.html' %}
+
+{% endblock %}

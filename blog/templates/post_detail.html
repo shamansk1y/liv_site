@@ -1,0 +1,73 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="{% url 'main_page:index' %}">Головна</a>
+                    <a class="breadcrumb-item text-dark" href="{% url 'blogpost:blog_post_list' %}">Блог</a>
+                    <span class="breadcrumb-item active">{{ post.title }}</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+   <!-- Breadcrumb End -->
+
+
+<div class="container">
+    <div class="row">
+
+        <!-- Post Image Start -->
+        <div class="col-md-3">
+            <div class="about-fixed">
+                <div class="my-pic">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+                </div>
+
+            </div>
+        </div>
+        <!-- Post Image End -->
+
+        <!-- Blog Post Start -->
+        <div class="col-md-9">
+            <div class="col-md-12 page-body">
+                <div class="row">
+
+                    <div class="col-md-12 content-page">
+                        <div class="col-md-12 blog-post">
+
+                            <!-- Post Headline Start -->
+                            <div class="post-title">
+                                <h1 class="text-dark text-uppercase">{{ post.title }}</h1>
+                            </div>
+                            <!-- Post Headline End -->
+
+                            <!-- Post Detail Start -->
+                            <div class="post-info">
+                                <span class="text-dark"> Дата публікації: {{ post.pub_date|date:"j.m.Y" }}</span>
+                            </div>
+                            <!-- Post Detail End -->
+
+                            <p>{{ post.content|safe }}</p>
+
+                            <!-- Post Image Start -->
+                            <div class="post-image margin-top-40 margin-bottom-40">
+                               <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+                            </div>
+                            <!-- Post Image End -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main_page.apps.MainPageConfig',
     'blog.apps.BlogConfig',
+    'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
+    'shop.apps.ShopConfig',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +133,15 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+CART_SESSION_ID = 'cart'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

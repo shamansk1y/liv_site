@@ -1,5 +1,6 @@
 # from account.models import Favorite
 from cart.cart import Cart
+from shop.models import Category
 from .forms import SubscriptionForm, ContactUsForm
 from .models import Slider, Contacts, About
 
@@ -14,8 +15,8 @@ def get_common_context():
         # 'last_products': Product.objects.order_by('-created')[:8],
         # 'products': Product.objects.filter(available=True),
         # 'recommended_products': RecommendedProduct.objects.all()[:8],
-        # 'category': Category.objects.filter(parent=None),
-        # 'manufacturer': Manufacturer.objects.all(),
+        'category': Category.objects.filter(is_visible=True),
+
     }
 
 

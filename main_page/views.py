@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from main_page.context_data import get_page_context
+
+from cart.cart import Cart
+from main_page.context_data import get_page_context, get_common_context
 from main_page.forms import ContactUsForm, SubscriptionForm
+from shop.models import Product
 
 
 def handle_post_request(request):
@@ -17,16 +20,16 @@ def handle_post_request(request):
 
 
 def index(request):
-    # cart = Cart(request)
+    cart = Cart(request)
 
     if request.method == 'POST':
         handle_post_request(request)
     data = {
-        # 'cart': cart,
+        'cart': cart,
     }
     context_req = get_page_context(request)
-    # context_data = get_common_context()
-    # data.update(context_data)
+    context_data = get_common_context()
+    data.update(context_data)
     data.update(context_req)
     return render(request, 'index.html', context=data)
 
@@ -44,3 +47,20 @@ def about(request):
 
     data = get_page_context(request)
     return render(request, 'about.html', context=data)
+
+
+def product_list(request, slug):
+    products = Product.objects.filter(available=True)
+    cart = Cart(request)
+
+    if request.method == 'POST':
+        handle_post_request(request)
+    data = {
+        'cart': cart,
+        'products': products,
+    }
+    context_req = get_page_context(request)
+    context_data = get_common_context()
+    data.update(context_data)
+    data.update(context_req)
+    return render(request, 'list.html', context=data)

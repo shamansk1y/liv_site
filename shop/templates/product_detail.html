@@ -1,18 +1,132 @@
 {% extends 'main.html' %}
+
 {% load static %}
 
-{% block title %}
-    {{ product.name }}
-{% endblock %}
-
 {% block content %}
-    <div class="product-detail">
-        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
-        <h1>{{ product.name }}</h1>
 
-        <p class="price">${{ product.price }}</p>
-        <a href="{% url "cart:cart_add" product.id %}">Add to cart</a>
+<section class="single-product">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<ol class="breadcrumb">
+					<li><a href="{% url 'index' %}">Головна</a></li>
+					<li><a href="#">Всі товари</a></li>
+					<li class="active">{{ product.name }}</li>
+				</ol>
+			</div>
+		</div>
+		<div class="row mt-20">
+			<div class="col-md-5">
+				<div class="single-product-slider">
+					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+						<div class='carousel-outer'>
+							<!-- me art lab slider -->
+							<div class='carousel-inner '>
+								<div class='item active'>
+									<img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" data-zoom-image="images/shop/single-products/product-1.jpg" />
+								</div>
+								<div class='item'>
+									<img src='images/shop/single-products/product-2.jpg' alt='' data-zoom-image="images/shop/single-products/product-2.jpg" />
+								</div>
+							</div>
 
-        {{ product.description|linebreaks }}
-    </div>
+							<!-- sag sol -->
+							<a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+								<i class="tf-ion-ios-arrow-left"></i>
+							</a>
+							<a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+								<i class="tf-ion-ios-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7">
+                <div class="single-product-details">
+                    <h2>{{ product.name }}</h2>
+                    {% if product.discounted_price %}
+                        <h3 class="discounted-price">{{ product.discounted_price }} UAH</h3><h4 class="text-muted ml-2"><del>{{ product.price }} UAH</del></h4>
+                    {% else %}
+                        <h3>{{ product.price }} UAH</h3>
+                    {% endif %}
+                    {% if product.article %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Артикул:</strong> <span class="article-info">{{ product.article }}</span></h5>
+                    {% endif %}
+                    {% if product.brand %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Бренд:</strong> <span class="article-info">{{ product.brand }}</span></h5>
+                    {% endif %}
+                    {% if product.weight %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Вага:</strong> <span class="article-info"> {{ product.weight }}</span></h5>
+                    {% endif %}
+                    {% if product.country %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Країна виробництва:</strong> <span class="article-info"> {{ product.country }}</span></h5>
+                    {% endif %}
+                    {% if product.application %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Застосування:</strong> <span class="article-info"> {{ product.application }}</span></h5>
+                    {% endif %}
+                    {% if product.warning %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Застереження:</strong> <span class="article-info"> {{ product.warning }}</span></h5>
+                    {% endif %}
+                    {% if product.consist %}
+                        <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Склад:</strong> <span class="article-info"> {{ product.consist }}</span></h5>
+                    {% endif %}
+                    <h5 class="font-weight-semi-bold mb-4 brand-info"><strong>Наявність:</strong> <span class="article-info"> {{ product.get_status_display }}</span></h5>
+					<div class="product-quantity">
+						<span>Кількість:</span>
+						<div class="product-quantity-slider">
+							<input id="product-quantity" type="text" value="0" name="product-quantity">
+						</div>
+					</div>
+					<a href="{% url "cart:cart_add" product.id %}" class="btn btn-main mt-20">Додати до кошика</a>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="tabCommon mt-20">
+					<ul class="nav nav-tabs">
+						<li class="active"><a data-toggle="tab" href="#details" aria-expanded="true">Опис товару</a></li>
+						<li class=""><a data-toggle="tab" href="#reviews" aria-expanded="false">Відгуки (3)</a></li>
+					</ul>
+					<div class="tab-content patternbg">
+						<div id="details" class="tab-pane fade active in">
+							<p>{{ product.description }}</p>
+						</div>
+						<div id="reviews" class="tab-pane fade">
+							<div class="post-comments">
+						    	<ul class="media-list comments-list m-bot-50 clearlist">
+
+                                    <!-- Comment Item start-->
+								    <li class="media">
+								        <a class="pull-left" href="#!">
+								            <img class="media-object comment-avatar" src="images/blog/avater-1.jpg" alt="" width="50" height="50" />
+								        </a>
+
+								        <div class="media-body">
+								            <div class="comment-info">
+								                <h4 class="comment-author">
+								                    <a href="#!">Jonathon Andrew</a>
+								                </h4>
+								                <time datetime="2013-04-06T13:53">July 02, 2015, at 11:34</time>
+								                <a class="comment-button" href="#!"><i class="tf-ion-chatbubbles"></i>Reply</a>
+								            </div>
+								            <p>
+								                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at magna ut ante eleifend eleifend.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod laborum minima, reprehenderit laboriosam officiis praesentium? Impedit minus provident assumenda quae.
+								            </p>
+								        </div>
+								    </li>
+								    <!-- End Comment Item -->
+                                </ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
 {% endblock %}
+
+

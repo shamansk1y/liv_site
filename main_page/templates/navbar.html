@@ -40,8 +40,8 @@
 							role="button" aria-haspopup="true" aria-expanded="false">Категорії </a>
                                 <div class="row">
                                     <ul class="dropdown-menu">
-                                        {% for item in category %}
-                                            <li><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></li>
+                                        {% for category in categories %}
+                                            <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
                                         {% endfor %}
                                     </ul>
                                 </div>

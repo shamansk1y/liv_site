@@ -1,0 +1,41 @@
+{% load static %}
+
+
+<!-- Cart -->
+
+    <li class="dropdown cart-nav dropdown-slide">
+        <a href="{% url 'cart:cart_detail' %}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"><i
+                class="tf-ion-android-cart"></i>Кошик</a>
+        <div class="dropdown-menu cart-dropdown">
+
+            <!-- Cart Item -->
+            {% for item in cart %}
+                {% with product=item.product %}
+                    <div class="media">
+                        <a class="pull-left" href="#">
+                            <img class="media-object" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h4>
+                            <div class="cart-price">
+                                <span>{{ item.quantity }} x</span>
+                                <span>{{ product.price }} UAH</span>
+                            </div>
+                            <h5><strong>{{ item.total_price }} UAH</strong></h5>
+                        </div>
+                        <a href="{% url "cart:cart_remove" product.id %}" class="remove"><i class="tf-ion-close"></i></a>
+                    </div><!-- / Cart Item -->
+                {% endwith %}
+            {% endfor %}
+
+            <div class="cart-summary">
+                <span>Загалом</span>
+                <span class="total-price">{{ cart.get_total_price }} UAH</span>
+            </div>
+            <ul class="text-center cart-buttons">
+                <li><a href="{% url 'cart:cart_detail' %}" class="btn btn-small">Переглянути</a></li>
+                <li><a href="{% url 'orders:order_create' %}" class="btn btn-small btn-solid-border">Оформити</a></li>
+            </ul>
+        </div>
+
+    </li><!-- / Cart -->

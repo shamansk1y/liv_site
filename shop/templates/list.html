@@ -4,7 +4,6 @@
 
 {% block content %}
 
-
 <section class="page-header">
 	<div class="container">
 		<div class="row">
@@ -55,9 +54,6 @@
                                 </div>
                                 <div class="text-center py-4">
                                     <a class="h5 text-decoration-none product-name" href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                             <style>
-
-                            </style>
 
                                     <div class="price-wrapper">
                                         {% if product.discounted_price %}
@@ -69,9 +65,8 @@
 
                                     <div class="button-wrapper">
                                         <button class="btn btn-secondary" onclick="location.href='{{ product.get_absolute_url }}'">Переглянути товар</button>
-                                        <button class="btn btn-secondary" onclick="location.href='{% url "cart:cart_add" product.id %}'">В кошик</button>
+                                        <button class="btn btn-main btn-medium btn-round btn-icon" onclick="location.href='{% url "cart:cart_add" product.id %}'">В кошик</button>
                                     </div>
-
 
                                 </div>
                             </div>

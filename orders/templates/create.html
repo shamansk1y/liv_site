@@ -11,42 +11,44 @@
             <div class="col-md-8">
                <div class="block billing-details">
                   <h4 class="widget-title">Інформація для відправки замовлення</h4>
-                  <form class="checkout-form">
-
+                  <form method="post" class="checkout-form">
+                    {% csrf_token %}
                      <div class="checkout-country-code clearfix">
                         <div class="form-group">
-                           <label for="user_post_code">Ім'я</label>
-                           <input type="text" class="form-control" id="user_post_code" name="zipcode" value="">
+                           <label for="first_name">Ім'я</label>
+                            {{ form.first_name }}
                         </div>
                         <div class="form-group" >
-                           <label for="user_city">Прізвице</label>
-                           <input type="text" class="form-control" id="user_city" name="city" value="">
+                           <label for="last_name">Прізвице</label>
+                           {{ form.last_name }}
                         </div>
                      </div>
-
                      <div class="checkout-country-code clearfix">
                         <div class="form-group">
-                           <label for="user_post_code">Електонна пошта</label>
-                           <input type="text" class="form-control" id="user_post_code" name="zipcode" value="">
+                           <label for="email" style="white-space: nowrap;">Електонна пошта</label>
+                           {{ form.email }}
                         </div>
                         <div class="form-group" >
-                           <label for="user_city">Номер мобільного</label>
-                           <input type="text" class="form-control" id="user_city" name="city" value="">
+                           <label for="phone" style="white-space: nowrap;">Номер мобільного</label>
+                           {{ form.phone }}
                         </div>
                      </div>
-
                      <div class="checkout-country-code clearfix">
                         <div class="form-group">
                            <label for="user_post_code">Місто</label>
-                           <input type="text" class="form-control" id="user_post_code" name="zipcode" value="">
+                           {{ form.city }}
                         </div>
                         <div class="form-group" >
-                           <label for="user_city">Номер відділення Нової Пошти</label>
-                           <input type="text" class="form-control" id="user_city" name="city" value="">
+                           <label for="user_city" style="white-space: nowrap;">Номер відділення Нової Пошти</label>
+                           {{ form.postal_code }}
                         </div>
                      </div>
+                      <div class="form-group" >
+                          <label for="message" style="white-space: nowrap;">Коментар, не обов'язково</label>
+                          {{ form.message }}
+                      </div>
 
-                      <a href="confirmation.html" class="btn btn-main mt-20">Оформити замовлення</a >
+                      <button type="submit" class="btn btn-main mt-20">Оформити замовлення</button >
                   </form>
                </div>
 

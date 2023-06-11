@@ -1,9 +1,22 @@
 {% extends 'main.html' %}
 
-{% block title %}Thank you{% endblock %}
-
 {% block content %}
-    <h1>Thank you</h1>
-    <p>Your order has been successfully completed.</p>
-    <p>Your order number is <strong>{{ order.id }}</strong>.</p>
+
+<!-- Page Wrapper -->
+<section class="page-wrapper success-msg">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="block text-center">
+        	<i class="tf-ion-android-checkmark-circle"></i>
+            <h1>Дякуємо!</h1>
+            <h2 class="text-center">Замовлення успішно оформлене, очікуйте дзвінка для підтвердження</h2>
+            <p>Ваш номер замовлення: <strong>{{ order.id }}</strong>.</p>
+            <a href="{% url 'index' %}" class="btn btn-main mt-20">Продовжити покупки</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /.page-warpper -->
+
 {% endblock %}

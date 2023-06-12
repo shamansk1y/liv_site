@@ -1,9 +1,9 @@
 # from account.models import Favorite
 from cart.cart import Cart
-from shop.models import Category
+from shop.models import Category, Product
 from .forms import SubscriptionForm, ContactUsForm
 from .models import Slider, Contacts, About
-
+from shop.models import RecommendedProduct
 
 def get_common_context():
     return {
@@ -12,9 +12,8 @@ def get_common_context():
         'subscription': SubscriptionForm(),
         'contact_us': ContactUsForm(),
         'about': About.objects.get(id=1),
-        # 'last_products': Product.objects.order_by('-created')[:8],
-        # 'products': Product.objects.filter(available=True),
-        # 'recommended_products': RecommendedProduct.objects.all()[:8],
+        'last_products': Product.objects.order_by('-created')[:4],
+        'recommended_products': RecommendedProduct.objects.all()[:4],
         'categories': Category.objects.filter(is_visible=True),
 
     }

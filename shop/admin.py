@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category
+from .models import Product, Category, RecommendedProduct
 
 
 @admin.register(Product)
@@ -14,3 +14,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name','position', 'is_visible']
     list_editable = ['position', 'is_visible']
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(RecommendedProduct)
+class RecommendedProduct(admin.ModelAdmin):
+    model = RecommendedProduct
+    list_filter = ['position']

@@ -57,20 +57,23 @@
                <div class="product-checkout-details">
                   <div class="block">
                      <h4 class="widget-title">Деталі замовлення</h4>
-
+                    {% for item in cart %}
+                        {% with product=item.product %}
                              <div class="media product-card">
-                                <a class="pull-left" href="product-single.html">
-                                   <img class="media-object" src="images/shop/cart/cart-1.jpg" alt="Image" />
+                                <a class="pull-left" href="{{ product.get_absolute_url }}">
+                                   <img class="media-object" src="{{ product.image.url }}" alt="{{ product.name }}" />
                                 </a>
                                 <div class="media-body">
-                                   <h4 class="media-heading"><a href="product-single.html">Ambassador Heritage 1921</a></h4>
-                                   <p class="price">1 x $249</p>
-                                   <span class="remove" >Remove</span>
+                                   <h4 class="media-heading"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h4>
+                                   <p class="price">{{ item.quantity }} x {{ product.price }} UAH</p>
+                                   <span class="{% url "cart:cart_remove" product.id %}">Видалити</span>
                                 </div>
                              </div>
+                        {% endwith %}
+                    {% endfor %}
                      <div class="summary-total">
                         <span>Загалом</span>
-                        <span>$250</span>
+                        <span>{{ cart.get_total_price }} UAH</span>
                      </div>
                   </div>
                </div>

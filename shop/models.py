@@ -65,3 +65,15 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse("shop:product_detail", args=[self.slug])
+
+
+class RecommendedProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    position = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['position']
+        verbose_name_plural = 'Рекомендовані товари'
+
+    def __str__(self):
+        return self.product.name

@@ -8,19 +8,18 @@
 					<h2>Категорії товарів</h2>
 				</div>
 			</div>
-
-			<div class="col-md-3">
-				<div class="category-box">
-					<a href="#!">
-						<img src="images/shop/category/category-1.jpg" alt="" />
-						<div class="content">
-							<h3>Clothes Sales</h3>
-							<p>Shop New Season Clothing</p>
-						</div>
-					</a>
-				</div>
-            </div>
-
+            {% for category in category_main_page %}
+                <div class="col-md-3">
+                    <div class="category-box">
+                        <a onclick="location.href='{{ category.get_absolute_url }}'">
+                            <img src="{{ category.photo.url }}" alt="{{ category.name }}" />
+                            <div class="content">
+                                <h3>{{ category.name }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
 
 		</div>
 	</div>

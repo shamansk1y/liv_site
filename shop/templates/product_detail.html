@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% load static %}
+{% load i18n %}
 
 {% block content %}
 
@@ -16,30 +17,51 @@
 			</div>
 		</div>
 		<div class="row mt-20">
+
 			<div class="col-md-5">
 				<div class="single-product-slider">
-					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
-						<div class='carousel-outer'>
-							<!-- me art lab slider -->
-							<div class='carousel-inner '>
-								<div class='item active'>
-									<img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" data-zoom-image="images/shop/single-products/product-1.jpg" />
-								</div>
-								<div class='item'>
-									<img src='images/shop/single-products/product-2.jpg' alt='' data-zoom-image="images/shop/single-products/product-2.jpg" />
-								</div>
-							</div>
+                    <div id="product-carousel" class="carousel slide" data-interval="false">
+                        <div class="carousel-outer">
+                            <!-- me art lab slider -->
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" data-zoom-image="images/shop/single-products/product-1.jpg" />
+                                </div>
+                                {% if product.subproductimages.all %}
+                                    {% for sub_image in product.subproductimages.all %}
+                                        <div class="item">
+                                            <img src="{{ sub_image.image.url }}" alt="" data-zoom-image="{{ sub_image.image.url }}" />
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
 
-							<!-- sag sol -->
-							<a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
-								<i class="tf-ion-ios-arrow-left"></i>
-							</a>
-							<a class='right carousel-control' href='#carousel-custom' data-slide='next'>
-								<i class="tf-ion-ios-arrow-right"></i>
-							</a>
-						</div>
-					</div>
-				</div>
+                            <!-- sag sol -->
+                            <a class="left carousel-control" href="#product-carousel" data-slide="prev">
+                                <i class="tf-ion-ios-arrow-left"></i>
+                            </a>
+                            <a class="right carousel-control" href="#product-carousel" data-slide="next">
+                                <i class="tf-ion-ios-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <!-- thumb -->
+                        <ol class="carousel-indicators mCustomScrollbar meartlab">
+                            <li data-target="#product-carousel" data-slide-to="0" class="active">
+                                <img src="{{ product.image.url }}" alt="" />
+                            </li>
+                            {% if product.subproductimages.all %}
+                                {% for sub_image in product.subproductimages.all %}
+                                    <li data-target="#product-carousel" data-slide-to="{{ forloop.counter }}">
+                                        <img src="{{ sub_image.image.url }}" alt="" />
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ol>
+                    </div>
+                </div>
+
+
 			</div>
 			<div class="col-md-7">
                 <div class="single-product-details">

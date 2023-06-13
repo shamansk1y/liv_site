@@ -15,7 +15,7 @@ def get_common_context():
         'last_products': Product.objects.order_by('-created')[:4],
         'recommended_products': RecommendedProduct.objects.all()[:4],
         'categories': Category.objects.filter(is_visible=True),
-
+        'category_main_page': Category.objects.filter(category_main_page=True)[:8],
     }
 
 

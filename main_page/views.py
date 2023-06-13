@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from cart.cart import Cart
 from main_page.context_data import get_page_context, get_common_context
 from main_page.forms import ContactUsForm, SubscriptionForm
-from shop.models import Product
+from shop.models import Product, Category
 
 
 def handle_post_request(request):
@@ -50,7 +50,8 @@ def about(request):
 
 
 def product_list(request, slug):
-    products = Product.objects.filter(available=True)
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category, available=True)
     cart = Cart(request)
 
     if request.method == 'POST':
@@ -58,6 +59,7 @@ def product_list(request, slug):
     data = {
         'cart': cart,
         'products': products,
+        'category': category,
     }
     context_req = get_page_context(request)
     context_data = get_common_context()

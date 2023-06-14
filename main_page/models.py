@@ -89,3 +89,25 @@ class About(models.Model):
     class Meta:
         ordering = ('title',)
         verbose_name_plural = 'Про нас'
+
+
+class Baner(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Назва слайду")
+    position = models.SmallIntegerField(verbose_name="Позиція")
+    image_3 = models.ImageField(upload_to=get_file_name_id, verbose_name="Зображення банер 1")
+    h_3 = models.CharField(max_length=250, blank=True, verbose_name="Заголовок банер 1")
+    desc_3 = models.TextField(max_length=500, blank=True, verbose_name="Опис банер 1")
+    tab_3 = models.CharField(max_length=50, blank=True, verbose_name="Текст кнопки банер 1")
+    tab_url_3 = models.URLField(blank=True, verbose_name="Посилання з кнопки банер 1")
+    image_4 = models.ImageField(upload_to=get_file_name_id, verbose_name="Зображення банер 2")
+    h_4 = models.CharField(max_length=250, blank=True, verbose_name="Заголовок банер 2")
+    desc_4 = models.TextField(max_length=500, blank=True, verbose_name="Опис банер 2")
+    tab_4 = models.CharField(max_length=50, blank=True, verbose_name="Текст кнопки банер 2")
+    tab_url_4 = models.URLField(blank=True, verbose_name="Посилання з кнопки банер 2")
+
+    def __str__(self):
+        return f'{self.title}'
+
+    class Meta:
+        ordering = ('position',)
+        verbose_name_plural = 'Банер'

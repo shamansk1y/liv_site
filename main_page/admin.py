@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main_page.models import Slider, ContactUs, Contacts, Subscription, About
+from main_page.models import Slider, ContactUs, Contacts, Subscription, About, Baner
 
 
 @admin.register(Slider)
@@ -39,4 +39,15 @@ class AboutAdmin(admin.ModelAdmin):
     model = About
     list_editable = ['title', 'desc', 'image', 'is_visible', 'tab_name', 'cat_url']
     list_display = ['title', 'desc', 'image', 'is_visible', 'tab_name', 'cat_url']
+    list_display_links = None
+
+
+
+@admin.register(Baner)
+class BanerAdmin(admin.ModelAdmin):
+    model = Baner
+    list_editable = ['title', 'position', 'image_3', 'h_3', 'desc_3', 'tab_3', 'tab_url_3', 'image_4', 'h_4',
+                     'desc_4', 'tab_4', 'tab_url_4']
+    list_display = ['title', 'position', 'image_3', 'h_3', 'desc_3', 'tab_3', 'tab_url_3', 'image_4', 'h_4',
+                    'desc_4', 'tab_4', 'tab_url_4']
     list_display_links = None

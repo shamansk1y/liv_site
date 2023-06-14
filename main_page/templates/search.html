@@ -1,0 +1,87 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Пошук</h1>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'index' %}">Головна</a></li>
+						<li class="active">Пошук</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<section class="products section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+
+				<div class="widget">
+					<h4 class="widget-title">Short By</h4>
+					<form method="post" action="#">
+                        <select class="form-control">
+                            <option>Man</option>
+                            <option>Women</option>
+                            <option>Accessories</option>
+                            <option>Shoes</option>
+                        </select>
+                    </form>
+	            </div>
+            </div>
+			<div class="col-md-9">
+				<div class="row">
+                {% if search_products %}
+                    {% for product in search_products %}
+                        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                            <div class="product-item bg-light mb-4">
+                                <div class="product-img position-relative overflow-hidden">
+                                    <a href="{{ product.get_absolute_url }}">
+                                        <img class="img-fluid w-100 product-img" src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/product.png" %}{% endif %}">
+                                    </a>
+                                    <div class="product-action">
+                                        <a class="btn btn-outline-dark btn-square" href="{{ product.get_absolute_url }}"><i class="fa fa-search"></i></a>
+                                    </div>
+                                </div>
+                                <div class="text-center py-4">
+                                    <a class="h5 text-decoration-none product-name" href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+
+                                    <div class="price-wrapper">
+                                        {% if product.discounted_price %}
+                                            <h4 class="discounted-price">{{ product.discounted_price }} UAH</h4><h5 class="text-muted ml-2"><del>{{ product.price }} UAH</del></h5>
+                                        {% else %}
+                                            <h4>{{ product.price }} UAH</h4>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="button-wrapper">
+                                        <button class="btn btn-secondary" onclick="location.href='{{ product.get_absolute_url }}'">Переглянути товар</button>
+                                        <button class="btn btn-main btn-medium btn-round btn-icon" onclick="location.href='{% url "cart:cart_add" product.id %}'">В кошик</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Упс... Нічого не найдено</p>
+                {% endif %}
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+
+
+
+{% endblock %}

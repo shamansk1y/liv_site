@@ -7,7 +7,7 @@
             class="tf-ion-ios-search-strong"></i>Пошук</a>
     <ul class="dropdown-menu search-dropdown">
         <li>
-            <form action="post"><input type="search" class="form-control" placeholder="шукати..."></form>
+            <form action="{% url 'search' %}" method="GET"><input type="text"  name="q" class="form-control" placeholder="Що шукаєте?"></form>
         </li>
     </ul>
 </li><!-- / Search -->

@@ -2,7 +2,7 @@
 from cart.cart import Cart
 from shop.models import Category, Product
 from .forms import SubscriptionForm, ContactUsForm
-from .models import Slider, Contacts, About
+from .models import Slider, Contacts, About, Baner
 from shop.models import RecommendedProduct
 
 def get_common_context():
@@ -15,7 +15,8 @@ def get_common_context():
         'last_products': Product.objects.order_by('-created')[:4],
         'recommended_products': RecommendedProduct.objects.all()[:4],
         'categories': Category.objects.filter(is_visible=True),
-        'category_main_page': Category.objects.filter(category_main_page=True)[:8],
+        'category_main_page': Category.objects.filter(category_main_page=True)[:4],
+        'baner': Baner.objects.get(id=1),
     }
 
 

@@ -2379,4 +2379,17 @@ input[type=email]:focus, input[type=password]:focus, input[type=text]:focus, inp
   font-size: 20px;
   color: #555;
 }
+
+.post-thumb {
+    position: relative;
+}
+
+.offer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+}
 /*# sourceMappingURL=style.css.map */

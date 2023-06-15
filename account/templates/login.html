@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}<title>Shop - Login </title>{% endblock %}
+
+
+{% block content %}
+
+        <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="{% url 'main_page:index' %}">Головна</a>
+                    <span class="breadcrumb-item active">Магазин - Вхід</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div id="login-box">
+                    <div class="center">
+                        <h1>Вхід</h1>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary" name="signup_submit" value="Log in">Увійти</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

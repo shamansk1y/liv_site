@@ -1,0 +1,68 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Історія замовлень</span></h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Номер заказа</th>
+            <th>Дата создания</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Город</th>
+            <th>№ НП</th>
+            <th>Адрес</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in order_history %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.created }}</td>
+            <td>{{ order.first_name }}</td>
+            <td>{{ order.last_name }}</td>
+            <td>{{ order.phone }}</td>
+            <td>{{ order.city }}</td>
+            <td>{{ order.postal_code }}</td>
+            <td>{{ order.address }}</td>
+        </tr>
+            <tr>
+                <td colspan="11">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Сообщение</th>
+                            <th>Список товаров</th>
+                            <th>Итоговая стоимость</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ order.message }}</td>
+                            <td>
+                                <ul>
+                                    {% for item in order.items.all %}
+                                        <li>{{ item.product.name }} ({{ item.size }}) x {{ item.quantity }} шт. - {{ item.price }} грн.</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ order.get_total_cost }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% if not loop.last %}
+                <tr>
+                    <td colspan="11">
+                        <hr>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

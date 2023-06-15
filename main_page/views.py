@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
 from cart.cart import Cart
 from main_page.context_data import get_page_context, get_common_context
 from main_page.forms import ContactUsForm, SubscriptionForm
 from shop.models import Product, Category
-
+from django.db.models import Q
 
 def handle_post_request(request):
 
@@ -70,7 +69,7 @@ def product_list(request, slug):
 
 def search(request):
     query = request.GET.get('q')
-    search_products = Product.objects.filter(name__icontains=query)
+    search_products = Product.objects.filter(Q(name__icontains = query) | Q(description__icontains=query))
     data = {'search_products': search_products, 'query': query}
     context_req = get_page_context(request)
     context_data = get_common_context()

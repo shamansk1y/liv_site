@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main_page.models import Slider, ContactUs, Contacts, Subscription, About, Baner
+from main_page.models import Slider, ContactUs, Contacts, Subscription, About, Baner, Review
 
 
 @admin.register(Slider)
@@ -51,3 +51,10 @@ class BanerAdmin(admin.ModelAdmin):
     list_display = ['title', 'position', 'image_3', 'h_3', 'desc_3', 'tab_3', 'tab_url_3', 'image_4', 'h_4',
                     'desc_4', 'tab_4', 'tab_url_4']
     list_display_links = None
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    model = Review
+    list_editable = ['email', 'message', 'product', 'date', 'is_approved']
+    list_display = ['name', 'email', 'message', 'product', 'date', 'is_approved']

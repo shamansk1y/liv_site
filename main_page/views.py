@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from cart.cart import Cart
 from main_page.context_data import get_page_context, get_common_context
@@ -52,12 +53,31 @@ def product_list(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(category=category, available=True)
     cart = Cart(request)
+    sort = request.GET.get('sort', '')  # get sorting parameter
 
-    if request.method == 'POST':
-        handle_post_request(request)
+    # sort products
+    if sort == 'price_desc':
+        products = products.order_by('-price')
+    elif sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'date_desc':
+        products = products.order_by('-created')
+    else:
+        products = products.order_by('position')
+
+    # paginator
+    count = 2  # количество товаров по умолчанию на странице
+    count_param = request.GET.get('count')
+    if count_param and count_param.isdigit():
+        count = int(count_param)
+    paginator = Paginator(products, count)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     data = {
+        'page_obj': page_obj,
         'cart': cart,
-        'products': products,
+        'products': page_obj,
         'category': category,
     }
     context_req = get_page_context(request)

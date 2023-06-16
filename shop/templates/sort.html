@@ -1,0 +1,22 @@
+        <div class="col-12 pb-1">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Сортування</button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="?sort=price_asc" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Від найдешевших</a>
+                    <a class="dropdown-item" href="?sort=price_desc" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Від найдорожчих</a>
+                    <a class="dropdown-item" href="?sort=date_desc" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Останні додані</a>
+                </div>
+            </div>
+
+            <div class="btn-group ml-2">
+                <form id="product-count-form" method="GET" action="?page={{ page_obj.number }}&count={{ request.GET.count }}">
+                    <select name="count" class="form-control form-control-sm" onchange="document.getElementById('product-count-form').submit()">
+                        <option value="36" {% if request.GET.count == '36' %}selected{% endif %}>36</option>
+                        <option value="48" {% if request.GET.count == '48' %}selected{% endif %}>48</option>
+                        <option value="96" {% if request.GET.count == '96' %}selected{% endif %}>96</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>

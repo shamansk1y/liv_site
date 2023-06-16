@@ -24,22 +24,17 @@
 <section class="products section">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3">
 
-				<div class="widget">
-					<h4 class="widget-title">Short By</h4>
-					<form method="post" action="#">
-                        <select class="form-control">
-                            <option>Man</option>
-                            <option>Women</option>
-                            <option>Accessories</option>
-                            <option>Shoes</option>
-                        </select>
-                    </form>
-	            </div>
+            <div class="col-md-3">
+
+                {% include 'filter.html' %}
+
             </div>
 			<div class="col-md-9">
 				<div class="row">
+
+                    {% include "sort.html" %}
+
 
                     {% for product in products %}
                         <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
@@ -67,17 +62,16 @@
                                         <button class="btn btn-secondary" onclick="location.href='{{ product.get_absolute_url }}'">Переглянути товар</button>
                                         <button class="btn btn-main btn-medium btn-round btn-icon" onclick="location.href='{% url "cart:cart_add" product.id %}'">В кошик</button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
-
 				</div>
 			</div>
-
 		</div>
+            {% include 'paginator.html' %}
 	</div>
+
 </section>
 
 

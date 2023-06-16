@@ -2,6 +2,9 @@ from django.db import models
 from main_page.utils import get_file_name, get_file_name_id
 from django.utils import timezone
 
+from shop.models import Product
+
+
 class Slider(models.Model):
 
     title = models.CharField(max_length=50, verbose_name="Назва слайду")
@@ -111,3 +114,20 @@ class Baner(models.Model):
     class Meta:
         ordering = ('position',)
         verbose_name_plural = 'Банер'
+
+
+class Review(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')])
+    date = models.DateTimeField(default=timezone.now)
+    is_approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('-date',)
+        verbose_name_plural = "Відгуки"

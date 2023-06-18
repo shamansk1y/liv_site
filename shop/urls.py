@@ -1,11 +1,10 @@
 from django.urls import path
-
-from . import views
-
+from .views import upload_csv_view, product_detail
 
 app_name = 'shop'
 
 urlpatterns = [
-    path('<slug:slug>/', views.product_detail, name='product_detail'),
+    path('<slug:slug>/', product_detail, name='product_detail'),
+
 
 ]

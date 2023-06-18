@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data" target="_blank" action="{% url 'upload_csv' %}">
+  {% csrf_token %}
+  <input type="file" name="csv_file">
+  <button type="submit">Загрузить</button>
+    </form>
+
+
+{% endblock %}

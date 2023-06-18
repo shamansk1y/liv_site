@@ -106,6 +106,32 @@ class Client:
         res = self.session.get(url)
         res.raise_for_status()
         soup = bs4.BeautifulSoup(res.content, 'html.parser')
+
+        div_element = soup.find('div', class_='photo __preview_state_zoom')
+        img_element = div_element.find('img')
+        image_url = img_element['src']
+        status = ""
+        div_element = soup.find('div', class_='description info')
+        p_elements = div_element.find_all('p')
+        description = '\n'.join([p.get_text() for p in p_elements])
+        art_el = soup.select_one('.preview-wrapper')
+        article = art_el.select_one('.sku').text
+        characteristics = soup.find('div', {'id': 'attribute'})
+
+
+        brand = characteristics.find('span', string='Бренд').find_next_sibling('span').text.strip()
+        weight = characteristics.find('span', string='Вага').find_next_sibling('span').text.strip()
+        country = characteristics.find('span', string='Країна виробництва').find_next_sibling('span').text.strip()
+        application = characteristics.find('span', string='Застосування').find_next_sibling('span').text.strip()
+        warning = characteristics.find('span', string='Застереження').find_next_sibling('span').text.strip()
+        consist = characteristics.find('span', string='Склад').find_next_sibling('span').text.strip()
+
+        print("Бренд:", brand)
+        print("Вага:", weight)
+        print("Країна виробництва:", country)
+        print("Застосування:", application)
+        print("Застереження:", warning)
+        print("Склад:", consist)
     #
     #     brand = brand_elem.text.strip() if (brand_elem := soup.select_one('span[itemprop="brand"]')) else None
     #     model = model_elem.text.strip() if (
@@ -116,10 +142,7 @@ class Client:
     #     availability = (div_elem.text.replace(span_elem.text, '').strip() if (
     #             div_elem := span_elem.find_parent('div')) else None) if (
     #             span_elem := soup.find('span', class_='width-margin', string='Наличие:')) else None
-    #     main_image_elem = soup.select_one('.thumbnails a.thumbnail')
-    #     main_image_url = main_image_elem['href'] if main_image_elem else None
-    #     additional_image_urls = [img['href'] for img in
-    #                              soup.select('.thumbnails li.image-additional a.thumbnail')] or None
+
     #
     #     additional_info = {
     #         'brand': brand,

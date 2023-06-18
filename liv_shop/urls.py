@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 
+from shop.views import upload_csv_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
     path('shop/', include('shop.urls', namespace='shop')),
     path('blog/', include('blog.urls', namespace='blog')),
+    path('upload-csv/', upload_csv_view, name='upload_csv'),
 ]
 
 

@@ -6,7 +6,10 @@ from main_page.forms import ReviewForm
 from main_page.models import Review
 from main_page.views import handle_post_request
 from .models import Product
-
+from django.contrib import messages
+from django.core.files.base import ContentFile
+import csv
+import requests
 
 
 def product_detail(request, slug):
@@ -35,3 +38,44 @@ def product_detail(request, slug):
     return render(request, 'product_detail.html', context=data)
 
 
+def upload_csv_view(request):
+    if request.method == 'POST':
+        csv_file = request.FILES.get('csv_file')
+        if csv_file.name.endswith('.csv'):
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+            for row in reader:
+                name = row['name']
+                slug = row['slug']
+                # Остальные поля из CSV файла
+
+                # Загрузка изображения
+                image_url = row['image']
+                response = requests.get(image_url)
+                if response.status_code == 200:
+                    image_name = image_url.split('/')[-1]
+                    image_content = response.content
+                    product = Product(name=name, slug=slug)
+                    product.image.save(image_name, ContentFile(image_content), save=False)
+                else:
+                    messages.warning(request, f"Не удалось загрузить изображение для товара '{name}'")
+
+                # Создание и сохранение товара
+                product = Product(name=name, slug=slug)
+                product.article = row['article']
+                product.description = row['description']
+                product.brand = row['brand']
+                product.weight = row['weight']
+                product.country = row['country']
+                product.application = row['application']
+                product.warning = row['warning']
+                product.consist = row['consist']
+                product.characteristics_gender = row['characteristics_gender']
+                # Заполните остальные поля товара
+
+                product.save()
+
+            messages.success(request, 'CSV файл успешно загружен и товары добавлены')
+        else:
+            messages.error(request, 'Пожалуйста, выберите файл с расширением .csv')
+    return render(request, 'upload_form.html')

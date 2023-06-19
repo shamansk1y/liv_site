@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import bs4
 import logging
 import csv
@@ -8,39 +5,47 @@ import requests
 from fake_useragent import UserAgent
 import collections
 import time
+import re
 
 logger = logging.getLogger('livesta')
 logging.basicConfig(level=logging.INFO)
 
 ua = UserAgent()
 headers = {'User-Agent': ua.random}
-# ParseResult = collections.namedtuple(
-#     'ParseResult',
-#     (
-#         'goods_name',
-#         'url',
-#         'price_old',
-#         'price_new',
-#         'brand',
-#         'model',
-#         'sizes',
-#         'availability',
-#         'main_image_url',
-#         'additional_image_urls',
-#     ),
-# )
+ParseResult = collections.namedtuple(
+    'ParseResult',
+    (
+        'name',
+        'url',
+        'price_old',
+        'price_new',
+        'image',
+        'description',
+        'article',
+        'brand',
+        'weight',
+        'country',
+        'application',
+        'warning',
+        'consist',
+
+    ),
+)
 
 HEADERS = (
-    'Назва',
-    'Посилання',
-    'Стара ціна',
-    'Нова ціна',
-    'Бренд',
-    'Модель',
-    'Розміри',
-    'Наявність',
-    'Посилання на основне зображення',
-    'Посилання на додаткові зображення',
+    'name',
+    'url',
+    'price_old',
+    'price_new',
+    'image',
+    'description',
+    'article',
+    'brand',
+    'weight',
+    'country',
+    'application',
+    'warning',
+    'consist',
 )
 
 
@@ -51,10 +56,11 @@ class Client:
         self.result = []
         self.start_time = None
         self.total_time = None
+        self.timeout = 10  # Тайм-аут в секундах
 
     def load_page(self, page):
         url = f'https://livesta.com.ua/index.php?route=product/search&for=&page={page}'
-        res = self.session.get(url)
+        res = self.session.get(url, timeout=self.timeout)
         res.raise_for_status()
         return res.content
 
@@ -68,15 +74,20 @@ class Client:
         for card in cards:
             # Извлекаем основную информацию о товаре
             goods_name_elem = card.select_one('.name a')
-            goods_name = goods_name_elem.text.strip()
+            name = goods_name_elem.text.strip()
             url = goods_name_elem['href']
 
             price_new_elem = card.select_one('.prices .price')
             if price_new_elem:
-                price_new = price_new_elem.text.strip()
+                price_new_text = price_new_elem.text.strip()
+                price_new_match = re.search(r'(\d+\.\d+)', price_new_text)
+                price_new = price_new_match.group(1) if price_new_match else None
+
                 price_old_elem = card.select_one('.prices .through')
                 if price_old_elem:
-                    price_old = price_old_elem.text.strip()
+                    price_old_text = price_old_elem.text.strip()
+                    price_old_match = re.search(r'(\d+\.\d+)', price_old_text)
+                    price_old = price_old_match.group(1) if price_old_match else None
                 else:
                     price_old = None
             else:
@@ -86,38 +97,41 @@ class Client:
             # Парсим дополнительную информацию с URL товара
             additional_info = self.parse_additional_info(url)
 
-            # # Создаем экземпляр ParseResult и добавляем его в список результатов
-            # self.result.append(ParseResult(
-            #     goods_name=goods_name,
-            #     url=url,
-            #     price_old=price_old,
-            #     price_new=price_new,
-            #     brand=additional_info['brand'],
-            #     model=additional_info['model'],
-            #     sizes=additional_info['sizes'],
-            #     availability=additional_info['availability'],
-            #     main_image_url=additional_info['main_image_url'],
-            #     additional_image_urls=additional_info['additional_image_urls'],
-            # ))
+            # Создаем экземпляр ParseResult и добавляем его в список результатов
+            self.result.append(ParseResult(
+                name=name,
+                url=url,
+                price_old=price_old,
+                price_new=price_new,
+                image=additional_info['image'],
+                description=additional_info['description'],
+                article=additional_info['article'],
+                brand=additional_info['brand'],
+                weight=additional_info['weight'],
+                country=additional_info['country'],
+                application=additional_info['application'],
+                warning=additional_info['warning'],
+                consist=additional_info['consist'],
+
+            ))
 
         return True
 
     def parse_additional_info(self, url):
-        res = self.session.get(url)
+        res = self.session.get(url, timeout=self.timeout)
         res.raise_for_status()
         soup = bs4.BeautifulSoup(res.content, 'html.parser')
 
         div_element = soup.find('div', class_='photo __preview_state_zoom')
         img_element = div_element.find('img')
-        image_url = img_element['src']
-        status = ""
+        image = img_element['src']
         div_element = soup.find('div', class_='description info')
         p_elements = div_element.find_all('p')
+
         description = '\n'.join([p.get_text() for p in p_elements])
         art_el = soup.select_one('.preview-wrapper')
         article = art_el.select_one('.sku').text
         characteristics = soup.find('div', {'id': 'attribute'})
-
 
         brand = characteristics.find('span', string='Бренд').find_next_sibling('span').text.strip()
         weight = characteristics.find('span', string='Вага').find_next_sibling('span').text.strip()
@@ -126,33 +140,18 @@ class Client:
         warning = characteristics.find('span', string='Застереження').find_next_sibling('span').text.strip()
         consist = characteristics.find('span', string='Склад').find_next_sibling('span').text.strip()
 
-        print("Бренд:", brand)
-        print("Вага:", weight)
-        print("Країна виробництва:", country)
-        print("Застосування:", application)
-        print("Застереження:", warning)
-        print("Склад:", consist)
-    #
-    #     brand = brand_elem.text.strip() if (brand_elem := soup.select_one('span[itemprop="brand"]')) else None
-    #     model = model_elem.text.strip() if (
-    #             model_elem := soup.select_one('div.bg-white.list-info span:-soup-contains("Модель:") + span')) else None
-    #     sizes_elems = soup.select('.form-group.select-option select option')
-    #     sizes = [size_elem.text.strip() for size_elem in sizes_elems[1:] if
-    #              size_elem.text.strip()] if sizes_elems else None
-    #     availability = (div_elem.text.replace(span_elem.text, '').strip() if (
-    #             div_elem := span_elem.find_parent('div')) else None) if (
-    #             span_elem := soup.find('span', class_='width-margin', string='Наличие:')) else None
-
-    #
-    #     additional_info = {
-    #         'brand': brand,
-    #         'model': model,
-    #         'sizes': sizes,
-    #         'availability': availability,
-    #         'main_image_url': main_image_url,
-    #         'additional_image_urls': additional_image_urls,
-    #     }
-    #     return additional_info
+        additional_info = {
+            'image': image,
+            'description': description,
+            'article': article,
+            'brand': brand,
+            'weight': weight,
+            'country': country,
+            'application': application,
+            'warning': warning,
+            'consist': consist,
+        }
+        return additional_info
 
     def save_results(self):
         with open('livesta_product.csv', 'w', newline='', encoding='utf-8') as f:

@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.core.files.base import ContentFile
 import csv
 import requests
-
+from django.utils.text import slugify
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, available=True)
@@ -46,7 +46,8 @@ def upload_csv_view(request):
             reader = csv.DictReader(decoded_file)
             for row in reader:
                 name = row['name']
-                slug = row['slug']
+                slug = slugify(name)  # Создание слага из названия
+
                 # Остальные поля из CSV файла
 
                 # Загрузка изображения
@@ -70,7 +71,8 @@ def upload_csv_view(request):
                 product.application = row['application']
                 product.warning = row['warning']
                 product.consist = row['consist']
-                product.characteristics_gender = row['characteristics_gender']
+                product.price = row['price_old']
+                product.discounted_price = row['price_new']
                 # Заполните остальные поля товара
 
                 product.save()

@@ -28,6 +28,7 @@ ParseResult = collections.namedtuple(
         'application',
         'warning',
         'consist',
+        'status',
 
     ),
 )
@@ -46,6 +47,7 @@ HEADERS = (
     'application',
     'warning',
     'consist',
+    'status',
 )
 
 
@@ -112,6 +114,7 @@ class Client:
                 application=additional_info['application'],
                 warning=additional_info['warning'],
                 consist=additional_info['consist'],
+                status=additional_info['status'],
 
             ))
 
@@ -125,20 +128,64 @@ class Client:
         div_element = soup.find('div', class_='photo __preview_state_zoom')
         img_element = div_element.find('img')
         image = img_element['src']
+
+        description = ''
+        article = ''
+        brand = ''
+        weight = ''
+        country = ''
+        application = ''
+        warning = ''
+        consist = ''
+        status = ''  # Добавлено значение по умолчанию для переменной status
+
         div_element = soup.find('div', class_='description info')
-        p_elements = div_element.find_all('p')
+        if div_element:
+            p_elements = div_element.find_all('p')
+            description = '\n'.join([p.get_text() for p in p_elements])
 
-        description = '\n'.join([p.get_text() for p in p_elements])
         art_el = soup.select_one('.preview-wrapper')
-        article = art_el.select_one('.sku').text
-        characteristics = soup.find('div', {'id': 'attribute'})
+        if art_el:
+            article = art_el.select_one('.sku').text
 
-        brand = characteristics.find('span', string='Бренд').find_next_sibling('span').text.strip()
-        weight = characteristics.find('span', string='Вага').find_next_sibling('span').text.strip()
-        country = characteristics.find('span', string='Країна виробництва').find_next_sibling('span').text.strip()
-        application = characteristics.find('span', string='Застосування').find_next_sibling('span').text.strip()
-        warning = characteristics.find('span', string='Застереження').find_next_sibling('span').text.strip()
-        consist = characteristics.find('span', string='Склад').find_next_sibling('span').text.strip()
+        characteristics = soup.find('div', {'id': 'attribute'})
+        if characteristics:
+            application_element = characteristics.find('span', string='Застосування')
+            if application_element:
+                application = application_element.find_next_sibling('span')
+                if application:
+                    application = application.text.strip()
+
+            brand_element = characteristics.find('span', string='Бренд')
+            if brand_element:
+                brand = brand_element.find_next_sibling('span').text.strip()
+
+            weight_element = characteristics.find('span', string='Вага')
+            if weight_element:
+                weight = weight_element.find_next_sibling('span').text.strip()
+
+            country_element = characteristics.find('span', string='Країна виробництва')
+            if country_element:
+                country = country_element.find_next_sibling('span').text.strip()
+
+            warning_element = characteristics.find('span', string='Застереження')
+            if warning_element:
+                warning = warning_element.find_next_sibling('span')
+                if warning:
+                    warning = warning.text.strip()
+
+            consist_element = characteristics.find('span', string='Склад')
+            if consist_element:
+                consist = consist_element.find_next_sibling('span')
+                if consist:
+                    consist = consist.text.strip()
+
+        status_element = soup.find('div', class_='stock')
+        if status_element:
+            status_label = status_element.find('div', class_='label')
+            status_value = status_element.find('span', class_='in-stock')
+            if status_label and status_value:
+                status = status_value.text.strip()
 
         additional_info = {
             'image': image,
@@ -150,6 +197,7 @@ class Client:
             'application': application,
             'warning': warning,
             'consist': consist,
+            'status': status,
         }
         return additional_info
 

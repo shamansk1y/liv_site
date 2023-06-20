@@ -90,7 +90,10 @@ def product_list(request, slug):
 def search(request):
     query = request.GET.get('q')
     search_products = Product.objects.filter(Q(name__icontains = query) | Q(description__icontains=query))
-    data = {'search_products': search_products, 'query': query}
+    data = {
+        'search_products': search_products,
+        'query': query,
+    }
     context_req = get_page_context(request)
     context_data = get_common_context()
     data.update(context_data)

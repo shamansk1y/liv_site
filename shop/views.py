@@ -10,7 +10,9 @@ from django.contrib import messages
 from django.core.files.base import ContentFile
 import csv
 import requests
-from django.utils.text import slugify
+from django.core.exceptions import ObjectDoesNotExist
+from slugify import slugify
+
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, available=True)
@@ -38,6 +40,7 @@ def product_detail(request, slug):
     return render(request, 'product_detail.html', context=data)
 
 
+
 def upload_csv_view(request):
     if request.method == 'POST':
         csv_file = request.FILES.get('csv_file')
@@ -46,7 +49,15 @@ def upload_csv_view(request):
             reader = csv.DictReader(decoded_file)
             for row in reader:
                 name = row['name']
-                slug = slugify(name)  # Создание слага из названия
+                slug = slugify(name, separator='-')   # Создание слага из названия с разрешенными юникод-символами
+
+                # Проверка на существование слага
+                try:
+                    existing_product = Product.objects.get(slug=slug)
+                    messages.warning(request, f"Товар с названием '{name}' и слагом '{slug}' уже существует. Пропуск создания.")
+                    continue
+                except ObjectDoesNotExist:
+                    pass
 
                 # Остальные поля из CSV файла
 
@@ -61,8 +72,6 @@ def upload_csv_view(request):
                 else:
                     messages.warning(request, f"Не удалось загрузить изображение для товара '{name}'")
 
-                # Создание и сохранение товара
-                product = Product(name=name, slug=slug)
                 product.article = row['article']
                 product.description = row['description']
                 product.brand = row['brand']
@@ -73,7 +82,10 @@ def upload_csv_view(request):
                 product.consist = row['consist']
                 product.price = row['price_old']
                 product.discounted_price = row['price_new']
-                # Заполните остальные поля товара
+                status_mapping = {'Немає в наявності': 'Н', 'В наявності': 'В', 'Під замовлення 2-3 дні': 'П',
+                                  'Скоро в наявності': 'C'}
+                status = row['status']
+                product.status = status_mapping.get(status, 'Н')
 
                 product.save()
 
@@ -81,3 +93,4 @@ def upload_csv_view(request):
         else:
             messages.error(request, 'Пожалуйста, выберите файл с расширением .csv')
     return render(request, 'upload_form.html')
+

@@ -53,9 +53,9 @@ def product_list(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(category=category, available=True)
     cart = Cart(request)
-    sort = request.GET.get('sort', '')  # get sorting parameter
+    sort = request.GET.get('sort', '')  # получаем параметр сортировки
 
-    # sort products
+    # Сортируем товары
     if sort == 'price_desc':
         products = products.order_by('-price')
     elif sort == 'price_asc':
@@ -65,8 +65,16 @@ def product_list(request, slug):
     else:
         products = products.order_by('position')
 
-    # paginator
-    count = 2  # количество товаров по умолчанию на странице
+    # Получаем параметры фильтрации по цене
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    # Фильтруем товары по диапазону цен
+    if min_price and max_price:
+        products = products.filter(discounted_price__range=(min_price, max_price))
+
+    # Пагинация
+    count = 18  # количество товаров по умолчанию на странице
     count_param = request.GET.get('count')
     if count_param and count_param.isdigit():
         count = int(count_param)
@@ -79,6 +87,8 @@ def product_list(request, slug):
         'cart': cart,
         'products': page_obj,
         'category': category,
+        'min_price': min_price,
+        'max_price': max_price,
     }
     context_req = get_page_context(request)
     context_data = get_common_context()
@@ -87,15 +97,29 @@ def product_list(request, slug):
     return render(request, 'list.html', context=data)
 
 
+
 def search(request):
     query = request.GET.get('q')
-    search_products = Product.objects.filter(Q(name__icontains = query) | Q(description__icontains=query))
+    search_products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
+    # Pagination
+    count = 16  # количество товаров по умолчанию на странице
+    count_param = request.GET.get('count')
+    if count_param and count_param.isdigit():
+        count = int(count_param)
+    paginator = Paginator(search_products, count)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     data = {
-        'search_products': search_products,
+        'search_products': page_obj,
         'query': query,
+        'page_obj': page_obj,
     }
+
     context_req = get_page_context(request)
     context_data = get_common_context()
     data.update(context_data)
     data.update(context_req)
+
     return render(request, 'search.html', context=data)
